@@ -18,11 +18,11 @@ Here is a list of tiles that should currently be implemented in the game
 
 | Name | Description | Properties | Graphic |
 |------|-------------|------------|---------|
-| **Empty cell** | Represents an empty spot on the grid where a tile can move | ; | ![](empty_cell.png) |
-| **Player tile** |  Core game tile; In order to finish a level all tiles of this type need to be placed on the corresponding color spot |  Moveable; Rotatable; Destroyable; Different colors | ![](player_tile.png) |
-| **Color spot** | This is where the player tiles need to be placed | Stationary; Different Colors | ![](color_spot.png) |
-| **Rotate Right Tile** | If a moveable tiles moves to  a neighbouring spot of this tile it is rotated by 90 degree to the right | Stationary; Undestroyable | ![](rotate_right_tile.png) |
-| **Destroyer Tile** | If a moveable tile moves to an adjacent position it gets destroyed | Undestroyable | ![](destroyer_tile.png) |
+| **Empty cell** | Represents an empty spot on the grid where a tile can move | ; | ![](images/empty_cell.png) |
+| **Player tile** |  Core game tile; In order to finish a level all tiles of this type need to be placed on the corresponding color spot |  Moveable; Rotatable; Destroyable; Different colors | ![](images/player_tile.png) |
+| **Color spot** | This is where the player tiles need to be placed | Stationary; Different Colors | ![](images/color_spot.png) |
+| **Rotate Right Tile** | If a moveable tiles moves to  a neighbouring spot of this tile it is rotated by 90 degree to the right | Stationary; Undestroyable | ![](images/rotate_right_tile.png) |
+| **Destroyer Tile** | If a moveable tile moves to an adjacent position it gets destroyed | Undestroyable | ![](images/destroyer_tile.png) |
 
 
 #### Playable/Moveable tile
