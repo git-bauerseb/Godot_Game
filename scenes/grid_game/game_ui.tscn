@@ -1,0 +1,79 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://textures/grid_game/ui/play_button_texture.png" type="Texture" id=1]
+[ext_resource path="res://textures/grid_game/ui/exit_level_button_texture.png" type="Texture" id=2]
+[ext_resource path="res://fonts/Comfortaa-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://textures/grid_game/ui/selection_border.png" type="Texture" id=4]
+
+[sub_resource type="StyleBoxFlat" id=1]
+draw_center = false
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = ExtResource( 3 )
+
+[sub_resource type="StyleBoxTexture" id=3]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 1100, 742 )
+
+[node name="game_ui" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="header" type="Panel" parent="."]
+margin_right = 720.0
+margin_bottom = 200.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="simulate" type="Button" parent="header"]
+margin_left = 632.0
+margin_top = 16.0
+margin_right = 702.0
+margin_bottom = 86.0
+icon = ExtResource( 1 )
+flat = true
+clip_text = true
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit_level" type="Button" parent="header"]
+margin_left = 24.0
+margin_top = 16.0
+margin_right = 94.0
+margin_bottom = 86.0
+icon = ExtResource( 2 )
+flat = true
+clip_text = true
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="header"]
+margin_left = 120.0
+margin_top = 16.0
+margin_right = 608.0
+margin_bottom = 86.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.270588, 0.352941, 0.392157, 1 )
+text = "Level 1"
+align = 1
+valign = 1
+
+[node name="footer" type="Panel" parent="."]
+margin_left = 40.0
+margin_top = 824.0
+margin_right = 684.0
+margin_bottom = 1216.0
+custom_styles/panel = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

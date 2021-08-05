@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/grid_mechanics/GridUIManager.cs" type="Script" id=1]
+
+[node name="grid_mechanics" type="Node2D"]
+
+[node name="board" type="Node2D" parent="."]
+position = Vector2( 360, 640 )
+script = ExtResource( 1 )
