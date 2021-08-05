@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using EngineLearning.scripts.grid_game.misc;
+using EngineLearning.scripts.grid_mechanics;
+using Godot.Collections;
 
 public class GridUIManager : Node2D {
 
@@ -15,11 +17,14 @@ public class GridUIManager : Node2D {
     private Texture _playerTexture;
     private Texture _rotateRightTile;
 
-    private Sprite _player;
+    private Dictionary<int, Sprite> moveableSprites;
+    private Dictionary<int, Sprite> stationarySprites;
 
-    private float _playerRotation;
-
-    private Vector2Int playerGridPosition;
+    /*
+     * Represents the grid logic.
+     * Separate from UI.
+     */
+    private GridManager _gridManager;
 
 
     /*
@@ -32,6 +37,9 @@ public class GridUIManager : Node2D {
         _cellTexture = GD.Load<Texture>("res://textures/grid_game/cell_border.png");
         _playerTexture = GD.Load<Texture>("res://textures/grid_game/player_tile.png");
         _rotateRightTile = GD.Load<Texture>("res://textures/grid_game/rotate_right_tile.png");
+
+        moveableSprites = new Dictionary<int, Sprite>();
+        stationarySprites = new Dictionary<int, Sprite>();
         
         InitializeBoard();
         InitializePlayer();
@@ -43,15 +51,27 @@ public class GridUIManager : Node2D {
 
         if (_time > 1.0f) {
             _time = 0.0f;
-            UpdatePlayer();
-
         }
+        
+        // Update UI
+        UpdateUI(_time);
+    }
 
+    private void UpdateUI(float time) {
+        _gridManager.MoveableTiles.ForEach(tile => {
+            if (moveableSprites.TryGetValue(tile.GetHashCode(), out var sprite)) {
 
-        Vector2 nextPosition = ScreenCoordFromGridCoord(playerGridPosition.X, playerGridPosition.Y);
-        _player.Position = LinearInterpolation(_player.Position, nextPosition, _time);
-        _player.Rotation = Mathf.Deg2Rad(_playerRotation);
+                var targetPosition = ScreenCoordFromGridCoord(tile.X, tile.Y);
+                
+                sprite.Position = LinearInterpolation(sprite.Position, targetPosition, _time);
+                sprite.Rotation = Mathf.Deg2Rad(tile.Orientation.GetDegreeOrientation());
+                
 
+                if (Mathf.Abs(sprite.Position.DistanceTo(targetPosition)) < 1E-3) {
+                    sprite.Position = targetPosition;
+                }
+            }
+        });
     }
     
     private Vector2 LinearInterpolation(Vector2 S, Vector2 E, float t) {
@@ -60,15 +80,6 @@ public class GridUIManager : Node2D {
 
     private float LinearInterpolation(float s, float e, float t) {
         return (1 - t) * s + t * e;
-    }
-
-    private void UpdatePlayer() {
-        Vector2Int nextPosition = NextPosition(playerGridPosition);
-        if (IsInGrid(nextPosition)) {
-            playerGridPosition = nextPosition;
-        }
-
-        _playerRotation = (_playerRotation + 90f) % 360;
     }
 
     private Vector2Int NextPosition(Vector2Int current) {
@@ -82,19 +93,52 @@ public class GridUIManager : Node2D {
 
     private void InitializePlayer() {
         
-        // The grid position of the player
-        playerGridPosition = new Vector2Int(0, 0);
+        _gridManager.AddTile(TileType.MOVEABLE_TILE, 2, 0);
+        _gridManager.AddTile(TileType.MOVEABLE_TILE, 3, 0);
+
+        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 6, 0);
+        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 6, 6);
         
-        _player = new Sprite();
-        _player.Texture = _playerTexture;
-        _player.Name = "player";
-        _player.Scale = ScaleFromTexture(_playerTexture);
-        _player.Position = ScreenCoordFromGridCoord(playerGridPosition.X, playerGridPosition.Y);
+        // Initialize moveable tiles
+        _gridManager.MoveableTiles.ForEach(tile => {
+            var sprite = new Sprite();
+            sprite.Position = ScreenCoordFromGridCoord(tile.X, tile.Y);
+
+            switch (tile.Type) {
+                case TileType.MOVEABLE_TILE:
+                    sprite.Scale = ScaleFromTexture(_playerTexture);
+                    sprite.Texture = _playerTexture;
+                    sprite.Name = $"player_{tile.GetHashCode()}";
+                    break;
+                default: break;
+            }
+            
+            AddChild(sprite);
+            moveableSprites.Add(tile.GetHashCode(), sprite);
+        });
         
-        AddChild(_player);
+        // Initialize stationary tiles
+        _gridManager.StationaryTiles.ForEach(tile => {
+            var sprite = new Sprite();
+            sprite.Position = ScreenCoordFromGridCoord(tile.X, tile.Y);
+
+            switch (tile.Type) {
+                case TileType.ROTATE_RIGHT_TILE:
+                    sprite.Scale = ScaleFromTexture(_rotateRightTile);
+                    sprite.Texture = _rotateRightTile;
+                    sprite.Name = $"rotate_right_{tile.GetHashCode()}";
+                    break;
+                default: break;
+            }
+            
+            AddChild(sprite);
+            stationarySprites.Add(tile.GetHashCode(), sprite);
+        });
     }
     
     private void InitializeBoard() {
+
+        _gridManager = new GridManager(_numCellsX, _numCellsY);
         
         for (int y = 0; y < _numCellsY; y++) {
             for (int x = 0; x < _numCellsX; x++) {
@@ -118,10 +162,12 @@ public class GridUIManager : Node2D {
      * y:  The grid y coordinate
      */
     private Vector2 ScreenCoordFromGridCoord(int x, int y) {
-        return new Vector2(
+        Vector2 coord = new Vector2(
             -(_numCellsX / 2) * _cellSize + _cellSize * x,
             -(_numCellsY / 2) * _cellSize + _cellSize * y
             );
+        
+        return coord;
     }
     
     /*
@@ -134,5 +180,9 @@ public class GridUIManager : Node2D {
             _cellSize / texture.GetSize().x,
             _cellSize / texture.GetSize().y
             );
+    }
+
+    public void Step() {
+        _gridManager.UpdateBoard();
     }
 }
