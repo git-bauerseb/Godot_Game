@@ -11,6 +11,17 @@ namespace EngineLearning.scripts.grid_mechanics {
          * Tile that rotates all moveable neighbors by 90 degree in
          * right direction.
          */
-        ROTATE_RIGHT_TILE
+        ROTATE_RIGHT_TILE,
+        
+        /*
+         * Tile that copies the tile behind it.
+         */
+        SPAWNER_TILE,
+        
+        /*
+         * Tile that can be moved by other blocks but is stationary
+         * by itself.
+         */
+        WOOD_TILE
     }
 }

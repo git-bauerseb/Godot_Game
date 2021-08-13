@@ -15,7 +15,9 @@ public class GridUIManager : Node2D {
 
     private Texture _cellTexture;
     private Texture _playerTexture;
-    private Texture _rotateRightTile;
+    private Texture _rotateRightTexture;
+    private Texture _spawnerTexture;
+    private Texture _woodTexture;
 
     private Dictionary<int, Sprite> moveableSprites;
     private Dictionary<int, Sprite> stationarySprites;
@@ -36,7 +38,10 @@ public class GridUIManager : Node2D {
         _cellSprites = new Sprite[_numCellsY, _numCellsX];
         _cellTexture = GD.Load<Texture>("res://textures/grid_game/cell_border.png");
         _playerTexture = GD.Load<Texture>("res://textures/grid_game/player_tile.png");
-        _rotateRightTile = GD.Load<Texture>("res://textures/grid_game/rotate_right_tile.png");
+        _rotateRightTexture = GD.Load<Texture>("res://textures/grid_game/rotate_right_tile.png");
+        _spawnerTexture = GD.Load<Texture>("res://textures/grid_game/spawner_tile.png");
+        _woodTexture = GD.Load<Texture>("res://textures/grid_game/wood_texture.png");
+        
 
         moveableSprites = new Dictionary<int, Sprite>();
         stationarySprites = new Dictionary<int, Sprite>();
@@ -51,6 +56,7 @@ public class GridUIManager : Node2D {
 
         if (_time > 1.0f) {
             _time = 0.0f;
+            _gridManager.UpdateBoard();
         }
         
         // Update UI
@@ -93,52 +99,27 @@ public class GridUIManager : Node2D {
 
     private void InitializePlayer() {
         
-        _gridManager.AddTile(TileType.MOVEABLE_TILE, 2, 0);
-        _gridManager.AddTile(TileType.MOVEABLE_TILE, 3, 0);
-
-        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 6, 0);
-        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 6, 6);
+        _gridManager.AddTile(TileType.MOVEABLE_TILE, 1, 0);
+        _gridManager.AddTile(TileType.SPAWNER_TILE, TileOrientation.RIGHT, 2, 0);
+        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 7, 0);
+        _gridManager.AddTile(TileType.ROTATE_RIGHT_TILE, 7, 7);
+        _gridManager.AddTile(TileType.WOOD_TILE, 6, 6);
         
         // Initialize moveable tiles
         _gridManager.MoveableTiles.ForEach(tile => {
-            var sprite = new Sprite();
-            sprite.Position = ScreenCoordFromGridCoord(tile.X, tile.Y);
-
-            switch (tile.Type) {
-                case TileType.MOVEABLE_TILE:
-                    sprite.Scale = ScaleFromTexture(_playerTexture);
-                    sprite.Texture = _playerTexture;
-                    sprite.Name = $"player_{tile.GetHashCode()}";
-                    break;
-                default: break;
-            }
-            
-            AddChild(sprite);
-            moveableSprites.Add(tile.GetHashCode(), sprite);
+            AddSprite(tile);
         });
         
         // Initialize stationary tiles
         _gridManager.StationaryTiles.ForEach(tile => {
-            var sprite = new Sprite();
-            sprite.Position = ScreenCoordFromGridCoord(tile.X, tile.Y);
-
-            switch (tile.Type) {
-                case TileType.ROTATE_RIGHT_TILE:
-                    sprite.Scale = ScaleFromTexture(_rotateRightTile);
-                    sprite.Texture = _rotateRightTile;
-                    sprite.Name = $"rotate_right_{tile.GetHashCode()}";
-                    break;
-                default: break;
-            }
-            
-            AddChild(sprite);
-            stationarySprites.Add(tile.GetHashCode(), sprite);
+            AddSprite(tile);
         });
     }
     
     private void InitializeBoard() {
 
         _gridManager = new GridManager(_numCellsX, _numCellsY);
+        _gridManager.TileSpawnedEvent += TileSpawnedHandler;
         
         for (int y = 0; y < _numCellsY; y++) {
             for (int x = 0; x < _numCellsX; x++) {
@@ -184,5 +165,49 @@ public class GridUIManager : Node2D {
 
     public void Step() {
         _gridManager.UpdateBoard();
+    }
+
+    private void TileSpawnedHandler(object sender, TileEventArgs e) {
+        AddSprite(e.Tile);
+    }
+
+    private void AddSprite(Tile tile) {
+        
+        var sprite = new Sprite();
+        sprite.Position = ScreenCoordFromGridCoord(tile.X, tile.Y);
+        
+        
+        switch (tile.Type) {
+            case TileType.MOVEABLE_TILE:
+                sprite.Scale = ScaleFromTexture(_playerTexture);
+                sprite.Texture = _playerTexture;
+                sprite.Name = $"player_{tile.GetHashCode()}";
+                AddChild(sprite);
+                moveableSprites.Add(tile.GetHashCode(), sprite);
+                break;
+            case TileType.SPAWNER_TILE:
+                sprite.Scale = ScaleFromTexture(_spawnerTexture);
+                sprite.Texture = _spawnerTexture;
+                sprite.Name = $"spawner{tile.GetHashCode()}";
+                sprite.Rotation = Mathf.Deg2Rad(tile.Orientation.GetDegreeOrientation());
+                AddChild(sprite);
+                stationarySprites.Add(tile.GetHashCode(), sprite);
+                break;
+            case TileType.ROTATE_RIGHT_TILE:
+                sprite.Scale = ScaleFromTexture(_rotateRightTexture);
+                sprite.Texture = _rotateRightTexture;
+                sprite.Name = $"rotate_right_{tile.GetHashCode()}";
+                AddChild(sprite);
+                stationarySprites.Add(tile.GetHashCode(), sprite);
+                break;
+            case TileType.WOOD_TILE:
+                sprite.Scale = ScaleFromTexture(_woodTexture);
+                sprite.Texture = _rotateRightTexture;
+                sprite.Name = $"wood_{tile.GetHashCode()}";
+                AddChild(sprite);
+                stationarySprites.Add(tile.GetHashCode(), sprite);
+                break;
+            default: throw new Exception("Unreachable case");
+        }
     }
 }
