@@ -21,13 +21,13 @@ namespace EngineLearning.scripts.grid_game {
             }
         }
         
-        public static Vector2Int GetDirectNeighborFromOrientation(this TileOrientation orientation) {
+        public static IntVec2 GetDirectNeighborFromOrientation(this TileOrientation orientation) {
             switch (orientation) {
-                case TileOrientation.Up: return new Vector2Int(0, -1);
-                case TileOrientation.Down: return new Vector2Int(0, 1);
-                case TileOrientation.Left: return new Vector2Int(-1, 0);
-                case TileOrientation.Right: return new Vector2Int(1, 0);
-                default: return new Vector2Int(0,1);
+                case TileOrientation.Up: return new IntVec2(0, -1);
+                case TileOrientation.Down: return new IntVec2(0, 1);
+                case TileOrientation.Left: return new IntVec2(-1, 0);
+                case TileOrientation.Right: return new IntVec2(1, 0);
+                default: return new IntVec2(0,1);
             }
         }
 

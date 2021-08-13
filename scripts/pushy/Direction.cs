@@ -12,13 +12,13 @@ namespace EngineLearning.scripts.pushy {
     
     
     public static class DirectionExtension {
-        public static Vector2Int GetOffsetVec(this Direction direction) {
+        public static IntVec2 GetOffsetVec(this Direction direction) {
             switch (direction) {
-                case Direction.Down: return new Vector2Int(0, 1);
-                case Direction.Up: return new Vector2Int(0, -1);
-                case Direction.Left: return new Vector2Int(-1, 0);
-                case Direction.Right: return new Vector2Int(1, 0);
-                default: return new Vector2Int(0, 0);
+                case Direction.Down: return new IntVec2(0, 1);
+                case Direction.Up: return new IntVec2(0, -1);
+                case Direction.Left: return new IntVec2(-1, 0);
+                case Direction.Right: return new IntVec2(1, 0);
+                default: return new IntVec2(0, 0);
             }
         }
     }

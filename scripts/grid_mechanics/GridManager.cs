@@ -25,11 +25,11 @@ namespace EngineLearning.scripts.grid_mechanics {
         internal List<Tile> MoveableTiles { get; }
         internal List<Tile> StationaryTiles { get; }
 
-        internal Vector2Int[] neigborOffsets = {
-            new Vector2Int(1,0),        // Right
-            new Vector2Int(-1, 0),      // Left
-            new Vector2Int(0, 1),       // Down
-            new Vector2Int(0, -1)       // Up
+        internal IntVec2[] neigborOffsets = {
+            new IntVec2(1,0),        // Right
+            new IntVec2(-1, 0),      // Left
+            new IntVec2(0, 1),       // Down
+            new IntVec2(0, -1)       // Up
         };
         
         
@@ -91,7 +91,7 @@ namespace EngineLearning.scripts.grid_mechanics {
         internal void UpdateBoard() {
 
             MoveableTiles.ForEach(tile => {
-                Vector2Int nextPos = tile.NextPosition();
+                IntVec2 nextPos = tile.NextPosition();
 
                 
                 // If at the next position is no tile then move
@@ -144,7 +144,7 @@ namespace EngineLearning.scripts.grid_mechanics {
             });
         }
 
-        private bool IsValidCoordinate(Vector2Int pos) {
+        private bool IsValidCoordinate(IntVec2 pos) {
             return (0 <= pos.X && pos.X < _x) &&
                    (0 <= pos.Y && pos.Y < _y);
         }
@@ -177,10 +177,10 @@ namespace EngineLearning.scripts.grid_mechanics {
 
         private void SpawnNewTile(int x, int y, TileOrientation orientation) {
             var spawnPosition = orientation.GetNeighbor();
-            spawnPosition = new Vector2Int(spawnPosition.X + x, spawnPosition.Y + y);
+            spawnPosition = new IntVec2(spawnPosition.X + x, spawnPosition.Y + y);
 
             var neighborPosition = orientation.Opposite().GetNeighbor();
-            neighborPosition = new Vector2Int(neighborPosition.X + x, neighborPosition.Y + y);
+            neighborPosition = new IntVec2(neighborPosition.X + x, neighborPosition.Y + y);
             
             if (IsValidCoordinate(spawnPosition) && IsValidCoordinate(neighborPosition) 
                 && (occupiedBoard[neighborPosition.Y, neighborPosition.X] != 0) && occupiedBoard[spawnPosition.Y, spawnPosition.X] == 0) {

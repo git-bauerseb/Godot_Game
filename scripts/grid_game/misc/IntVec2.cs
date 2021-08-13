@@ -1,9 +1,9 @@
 namespace EngineLearning.scripts.grid_game.misc {
-    public struct Vector2Int {
+    public struct IntVec2 {
         public int X { get; }
         public int Y { get; }
 
-        public Vector2Int(int x, int y) {
+        public IntVec2(int x, int y) {
             X = x;
             Y = y;
         }

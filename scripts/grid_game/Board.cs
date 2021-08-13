@@ -82,12 +82,12 @@ namespace EngineLearning.scripts.grid_game {
                     case TileTypes.SPAWNER:
                         SpawnerTile sTile = tile as SpawnerTile;
 
-                        Vector2Int spawnOffset = sTile.Orientation.GetDirectNeighborFromOrientation();
+                        IntVec2 spawnOffset = sTile.Orientation.GetDirectNeighborFromOrientation();
 
                         int spawnX = sTile.X + spawnOffset.X;
                         int spawnY = sTile.Y + spawnOffset.Y;
 
-                        Vector2Int sourceOffset = sTile.Orientation.GetOppositeOrientation().GetDirectNeighborFromOrientation();
+                        IntVec2 sourceOffset = sTile.Orientation.GetOppositeOrientation().GetDirectNeighborFromOrientation();
                         int sourceX = sTile.X + sourceOffset.X;
                         int sourceY = sTile.Y + sourceOffset.Y;
 

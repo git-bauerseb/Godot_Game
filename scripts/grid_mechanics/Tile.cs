@@ -31,13 +31,13 @@ namespace EngineLearning.scripts.grid_mechanics {
             return OwnID;
         }
 
-        public Vector2Int NextPosition() {
+        public IntVec2 NextPosition() {
             switch (Orientation) {
-                case TileOrientation.UP: return new Vector2Int(X, Y - 1);
-                case TileOrientation.DOWN: return new Vector2Int(X, Y + 1);
-                case TileOrientation.LEFT: return new Vector2Int(X - 1, Y);
-                case TileOrientation.RIGHT: return new Vector2Int(X + 1, Y);
-                default: return new Vector2Int(X + 1, Y);
+                case TileOrientation.UP: return new IntVec2(X, Y - 1);
+                case TileOrientation.DOWN: return new IntVec2(X, Y + 1);
+                case TileOrientation.LEFT: return new IntVec2(X - 1, Y);
+                case TileOrientation.RIGHT: return new IntVec2(X + 1, Y);
+                default: return new IntVec2(X + 1, Y);
             }
         }
 

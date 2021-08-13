@@ -88,11 +88,11 @@ public class GridUIManager : Node2D {
         return (1 - t) * s + t * e;
     }
 
-    private Vector2Int NextPosition(Vector2Int current) {
-        return new Vector2Int(current.X + 1, current.Y);
+    private IntVec2 NextPosition(IntVec2 current) {
+        return new IntVec2(current.X + 1, current.Y);
     }
 
-    private bool IsInGrid(Vector2Int pos) {
+    private bool IsInGrid(IntVec2 pos) {
         return (0 <= pos.X && pos.X < _numCellsX) &&
                (0 <= pos.Y && pos.Y < _numCellsY);
     }
